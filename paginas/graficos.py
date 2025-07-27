@@ -1,6 +1,7 @@
 from ucimlrepo import fetch_ucirepo
 import plotly.express as px
 from dash import Dash, dcc, html
+import dash_bootstrap_components as dbc
 
 
 heart_disease = fetch_ucirepo(id=45)
@@ -12,23 +13,27 @@ dados["doenca"] = (heart_disease.data.targets > 0) * 1
 figura_boxplot = px.box(dados, x='doenca', y='age', title='Boxplot de idades', color='doenca')
 
 div_do_histograma = html.Div([
-        html.H2('Histograma de idades'),
         dcc.Graph(figure=figura_histograma)
 ])
 
 div_do_boxplot = html.Div([
-        html.H2('Boxplot de idades'),
         dcc.Graph(figure=figura_boxplot)
 ])
 
-app = Dash(__name__)
-app.layout = html.Div([
-    html.H1("Análise de dados do UCI Repository Heart Disease"),
-    div_do_histograma,
-    div_do_boxplot
-    
+
+layout = html.Div([
+    html.H1("Análise de dados do UCI Repository Heart Disease", className='text-center mb-5'),
+        dbc.Container([
+            dbc.Row([
+            dbc.Col([div_do_histograma], md=6), #o md representa quanto do total (12 no padrão) vc disponibiliza proporcional pra cada coluna
+            dbc.Col([div_do_boxplot], md=6),
+        ])
+    ])
+        
 ])
 
-# app.layout.children.append(div_do_boxplot) # Pode adicionar dinamicamente
 
-app.run_server(debug=True)
+
+
+
+
