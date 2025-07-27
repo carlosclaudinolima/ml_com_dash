@@ -24,3 +24,5 @@ print(f'A acurácia do modelo é {acuracia:.2%}')
 import joblib
 joblib.dump(modelo, 'modelo_xgboost.pkl')
 
+medianas = X.median()
+joblib.dump(medianas, 'mediana.pkl')
