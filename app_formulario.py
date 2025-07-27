@@ -9,11 +9,12 @@ modelo = joblib.load('modelo_xgboost.pkl')
 medianas = joblib.load('mediana.pkl')
 
 app = Dash(__name__, 
-           external_stylesheets=[dbc.themes.BOOTSTRAP])
+           external_stylesheets=[dbc.themes.FLATLY])
 
 
 
 formulario = dbc.Container([
+        html.P("Preencha as informações abaixo e clique em prever para rodar o modelo", className="text-center mb-5"),
         dbc.Row([
             dbc.Col([
                 dbc.CardGroup([
@@ -115,13 +116,10 @@ formulario = dbc.Container([
                     ]),
                 ], className='mb-3'),
                 # botao de previsao
-                dbc.CardGroup([
-                    dbc.Button("Prever", id='botao-prever', color='primary', n_clicks=0)
-                ], className='mb-3'),
-
+                dbc.Button("Prever", id='botao-prever', color='success', n_clicks=0, className='mt-3 mb-3 '),
             ])
         ])
-    ])
+    ], fluid=True)
 
 app.layout = html.Div([
     html.H1("Previsão de doença cardíaca", className="text-center mt-5"),
@@ -169,8 +167,15 @@ def prever_doenca(n_clicks, idade, sexo, cp, trestbps, chol, fbs, restecg, thala
             
     previsao = modelo.predict(entradas_usuario)[0] #[0] pois só temos uma previsão
     if previsao == 1:
-        return html.H2("Você tem doença cardíaca")
-    return html.H2("Você não tem doença cardíaca")
+        mensagem = "Você tem doença cardíaca"
+        cor_do_alerta = 'danger'
+    else:
+        mensagem = "Você não tem doença cardíaca"
+        cor_do_alerta = 'success'
+
+    #Em alerta não se usa o text-center e sim o dflex justify-content-center
+    alerta = dbc.Alert(mensagem, color=cor_do_alerta, className='d-flex justify-content-center mb-5')
+    return alerta
 
 #app.run_server    #Depreciada
 app.run(debug=True) #debug=True para ter as mensagens de erro também nop navegador
